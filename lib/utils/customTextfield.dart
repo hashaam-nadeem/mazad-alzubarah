@@ -5,10 +5,11 @@ import 'package:zubara/utils/textstyle.dart';
 
 class CustomTextField extends StatefulWidget {
   var width, height, title;
-  bool keyboardTypenumeric;
+  bool keyboardTypenumeric, number;
   TextEditingController controller = TextEditingController();
   CustomTextField(
       {@required this.height,
+      @required this.number,
       @required this.keyboardTypenumeric,
       this.controller,
       this.title,
@@ -28,7 +29,7 @@ class custom extends State<CustomTextField> {
       width: widget.width,
       decoration: BoxDecoration(
         borderRadius:
-            BorderRadius.circular(MediaQuery.of(context).size.width * .06),
+            BorderRadius.circular(MediaQuery.of(context).size.width * .01),
         color: Colors.white,
       ),
       padding: EdgeInsets.only(
@@ -39,10 +40,12 @@ class custom extends State<CustomTextField> {
         keyboardType: widget.keyboardTypenumeric == true
             ? TextInputType.number
             : TextInputType.text,
+        maxLength: widget.number == true ? 8 : 40,
         style: labelTextStyle.copyWith(
             color: secondaryColor, fontSize: 14, fontWeight: FontWeight.normal),
         decoration: InputDecoration(
             border: InputBorder.none,
+            counterText: "",
             labelText: "${widget.title}",
             labelStyle: labelTextStyle.copyWith(
                 color: secondaryColor,

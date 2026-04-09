@@ -114,14 +114,15 @@ class category extends State<DepartmentCategory> {
                             },
                             child: Container(
                               width: width * .3,
+                              margin:
+                                  EdgeInsets.only(left: 5, right: 5, top: 2),
                               // height: height * .15,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   border:
                                       Border.all(color: lightGolden, width: 1),
                                   color: greyColor),
-                              padding:
-                                  EdgeInsets.only(left: 5, right: 5, top: 2),
+                              padding: EdgeInsets.only(left: 5, right: 5),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -130,8 +131,8 @@ class category extends State<DepartmentCategory> {
                                     children: [
                                       Container(
                                         width: style == 1
-                                            ? width * .95
-                                            : width * .45,
+                                            ? width * .92
+                                            : width * .42,
                                         height: style == 1
                                             ? height * .24
                                             : height * .21,

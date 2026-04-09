@@ -296,7 +296,7 @@ class detail extends State<SingleProductDetail> {
                           },
                           child: CustomButton(
                             width: width * .7,
-                            height: height * .08,
+                            height: height * .06,
                             color: lightGolden,
                             title: "Add To Cart",
                           ),

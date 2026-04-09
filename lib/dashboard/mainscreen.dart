@@ -38,8 +38,21 @@ class main extends State<MainScreen> {
     height = MediaQuery.of(context).size.height;
     return Scaffold(
         key: _scaffoldkey,
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        // floatingActionButton: GestureDetector(
+        //   onTap: () {},
+        //   child: Container(
+        //     width: width * .15,
+        //     height: height * .08,
+        //     decoration:
+        //         BoxDecoration(shape: BoxShape.circle, color: darkGolden),
+        //     child: Center(
+        //       child: Icon(Icons.add),
+        //     ),
+        //   ),
+        // ),
         backgroundColor: mainColor,
-        drawer: MainDrawer(),
+        endDrawer: MainDrawer(),
         appBar: AppBar(
           toolbarHeight: height * .15,
           shadowColor: secondaryColor.withOpacity(0.1),
@@ -58,17 +71,6 @@ class main extends State<MainScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      print("helo");
-                      _scaffoldkey.currentState.openDrawer();
-                    },
-                    child: Icon(
-                      Icons.menu,
-                      color: lightGolden,
-                      size: height * .04,
-                    ),
-                  ),
                   Image.asset(
                     homeLogo,
                     width: width * .75,
@@ -76,15 +78,33 @@ class main extends State<MainScreen> {
                     color: lightGolden,
                     fit: BoxFit.fill,
                   ),
-                  GestureDetector(
-                      onTap: () {
-                        AppRoutes.push(context, NotificationScreen());
-                      },
-                      child: Icon(
-                        Icons.notifications,
-                        size: width * .1,
-                        color: lightGolden,
-                      )),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          print("helo");
+                          _scaffoldkey.currentState.openEndDrawer();
+                        },
+                        child: Icon(
+                          Icons.menu,
+                          color: lightGolden,
+                          size: height * .04,
+                        ),
+                      ),
+                      SizedBox(
+                        width: width * .02,
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            AppRoutes.push(context, NotificationScreen());
+                          },
+                          child: Icon(
+                            Icons.notifications,
+                            size: width * .1,
+                            color: lightGolden,
+                          )),
+                    ],
+                  ),
                 ],
               ),
             ),

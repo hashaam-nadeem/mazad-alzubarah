@@ -3,7 +3,7 @@ import 'dart:ui';
 final Color mainColor = Color(0xff262C47);
 final secondaryColor = Color(0xffC79343);
 final darkGolden = Color(0xff87683D);
-final lightGolden = Color(0xffD89E44);
+final lightGolden = Color(0xffD4B559);
 final greyColor = Color(0xff3E435A);
 final darkBlue = Color(0xff262C47);
 String logoImage = "images/logo.png";

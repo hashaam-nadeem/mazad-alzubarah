@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:zubara/API/basehelper.dart';
+import 'package:zubara/languagedata/language_constants.dart';
+import 'package:zubara/model/singleton.dart';
 import 'package:zubara/screens/login.dart';
 import 'package:zubara/screens/otp.dart';
 import 'package:zubara/utils/Colors.dart';
+import 'package:zubara/utils/const.dart';
 import 'package:zubara/utils/customButton.dart';
 import 'package:zubara/utils/customTextfield.dart';
 import 'package:zubara/utils/registrationAppbar.dart';
@@ -11,6 +15,8 @@ import 'package:zubara/utils/routes.dart';
 import 'package:zubara/utils/textstyle.dart';
 
 class SignUpScreen extends StatefulWidget {
+  int screen;
+  SignUpScreen({@required this.screen});
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -20,6 +26,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _languageScreen extends State<SignUpScreen> {
   var width, height;
+  TextEditingController phone = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -28,6 +35,7 @@ class _languageScreen extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: mainColor,
       appBar: RegistrationAppBar(
+        context: context,
         height: height * .25,
         languagePage: false,
         title: "Sign Up",
@@ -58,8 +66,10 @@ class _languageScreen extends State<SignUpScreen> {
                 children: [
                   CustomTextField(
                     width: width * .85,
+                    controller: phone,
+                    number: true,
                     title: "Mobile",
-                    keyboardTypenumeric: false,
+                    keyboardTypenumeric: true,
                     height: height * 08,
                   ),
                 ],
@@ -72,11 +82,40 @@ class _languageScreen extends State<SignUpScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      AppRoutes.push(context, Otp());
+                      if (phone.text.isEmpty) {
+                        constValues().toast(
+                            "${getTranslated(context, "required_field")}",
+                            context);
+                      } else {
+                        APIHELPER()
+                            .sendOtpUser(
+                                "+974${phone.text}", widget.screen, context)
+                            .then((value) {
+                          if (!value['error']) {
+                            print("valid");
+                            setState(() {
+                              User.userData.mobile = "+974${phone.text}";
+                            });
+                            AppRoutes.push(
+                                context,
+                                Otp(
+                                  screen: widget.screen,
+                                ));
+                          } else {
+                            constValues().toast(
+                                "${getTranslated(context, "wrong")}", context);
+                          }
+                          print(value);
+                        }).catchError((error) {
+                          constValues().toast(
+                              "${getTranslated(context, "wrong")}", context);
+                        });
+                      }
+                      // AppRoutes.push(context, Otp());
                     },
                     child: CustomButton(
                       width: width * .6,
-                      height: height * .08,
+                      height: height * .06,
                       color: lightGolden,
                       title: "Proceed",
                     ),
@@ -86,23 +125,25 @@ class _languageScreen extends State<SignUpScreen> {
               SizedBox(
                 height: height * .03,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      AppRoutes.replace(context, LoginScreen());
-                    },
-                    child: Text(
-                      "Already have an account?  Sign In",
-                      style: headingStyle.copyWith(
-                          color: lightGolden,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ),
-                ],
-              ),
+              widget.screen == 0
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            AppRoutes.replace(context, LoginScreen());
+                          },
+                          child: Text(
+                            "Already have an account?  Sign In",
+                            style: headingStyle.copyWith(
+                                color: lightGolden,
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
             ],
           ),
         ),

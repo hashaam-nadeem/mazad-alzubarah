@@ -22,13 +22,15 @@ class custom extends State<CustomButton> {
       color: widget.color,
       elevation: 5,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
+        borderRadius:
+            BorderRadius.circular(MediaQuery.of(context).size.width * .02),
       ),
       child: Container(
         width: widget.width,
         height: widget.height,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius:
+                BorderRadius.circular(MediaQuery.of(context).size.width * .02),
             color: widget.color,
             border: Border.all(color: mainColor)),
         child: Center(

@@ -3,15 +3,21 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:zubara/API/basehelper.dart';
+import 'package:zubara/languagedata/language_constants.dart';
+import 'package:zubara/model/singleton.dart';
 import 'package:zubara/screens/login.dart';
 import 'package:zubara/screens/setPassword.dart';
 import 'package:zubara/utils/Colors.dart';
+import 'package:zubara/utils/const.dart';
 import 'package:zubara/utils/customButton.dart';
 import 'package:zubara/utils/registrationAppbar.dart';
 import 'package:zubara/utils/routes.dart';
 import 'package:zubara/utils/textstyle.dart';
 
 class Otp extends StatefulWidget {
+  int screen;
+  Otp({@required this.screen});
   @override
   _OtpState createState() => new _OtpState();
 }
@@ -97,11 +103,36 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
           children: [
             GestureDetector(
               onTap: () {
-                AppRoutes.push(context, SetPassword());
+                if (otp == null) {
+                } else {
+                  APIHELPER()
+                      .verifyOtp(otp, widget.screen, context)
+                      .then((value) {
+                    if (!value['error']) {
+                      print("valid");
+                      setState(() {
+                        User.userData.otp = otp;
+                      });
+                      AppRoutes.replace(
+                          context,
+                          SetPassword(
+                            screen: widget.screen,
+                          ));
+                    } else {
+                      constValues()
+                          .toast("${getTranslated(context, "wrong")}", context);
+                    }
+                    print(value);
+                  }).catchError((error) {
+                    constValues()
+                        .toast("${getTranslated(context, "wrong")}", context);
+                  });
+                }
+                // AppRoutes.push(context, SetPassword());
               },
               child: CustomButton(
                 width: width * .6,
-                height: height * .08,
+                height: height * .06,
                 color: lightGolden,
                 title: "Submit OTP",
               ),
@@ -139,24 +170,18 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   get _getResendButton {
     return GestureDetector(
       onTap: () => {
-        // APIHelper()
-        //     .signupUser(
-        //         "${API.API_URL}${API.SignUp}", User.userData.mobile, context)
-        //     .then((value) {
-        //   setState(() {
-        //     print("values: $value");
-        //     if (value['error'] == false) {
-        //       constValues()
-        //           .toast("${getTranslated(context, "Resend")}", context);
-        //       //  AppRoutes.push(context, Otp());
-        //     } else {
-        //       constValues()
-        //           .toast("${getTranslated(context, "invalid")}", context);
-        //     }
-        //   });
-        // }).catchError((error) {
-        //   constValues().toast("${getTranslated(context, "wrong")}", context);
-        // })
+        APIHELPER()
+            .sendOtpUser("${User.userData.mobile}", widget.screen, context)
+            .then((value) {
+          if (!value['error']) {
+            print("valid");
+          } else {
+            constValues().toast("${getTranslated(context, "wrong")}", context);
+          }
+          print(value);
+        }).catchError((error) {
+          constValues().toast("${getTranslated(context, "wrong")}", context);
+        })
       },
       child: RichText(
         text: TextSpan(
@@ -408,6 +433,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       appBar: RegistrationAppBar(
         height: height * .25,
         languagePage: false,
+        context: context,
         title: "OTP",
         pop: true,
       ),

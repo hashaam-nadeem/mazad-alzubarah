@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:zubara/screens/login.dart';
 import 'package:zubara/screens/signup.dart';
 import 'package:zubara/utils/Colors.dart';
+import 'package:zubara/utils/const.dart';
 import 'package:zubara/utils/customButton.dart';
 import 'package:zubara/utils/registrationAppbar.dart';
 import 'package:zubara/utils/routes.dart';
@@ -18,6 +20,13 @@ class LanguageScreen extends StatefulWidget {
 
 class _languageScreen extends State<LanguageScreen> {
   var width, height;
+  bool enableSlideOff = true;
+  bool hideCloseButton = false;
+  bool onlyOne = true;
+  bool crossPage = true;
+  int seconds = 2;
+  int animationMilliseconds = 200;
+  int animationReverseMilliseconds = 200;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -26,6 +35,7 @@ class _languageScreen extends State<LanguageScreen> {
     return Scaffold(
       backgroundColor: mainColor,
       appBar: RegistrationAppBar(
+        context: context,
         height: height * .25,
         languagePage: true,
         title: "Get Started",
@@ -59,7 +69,7 @@ class _languageScreen extends State<LanguageScreen> {
                   },
                   child: CustomButton(
                     width: width * .6,
-                    height: height * .08,
+                    height: height * .06,
                     color: lightGolden,
                     title: "Sign In",
                   ),
@@ -74,11 +84,15 @@ class _languageScreen extends State<LanguageScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    AppRoutes.push(context, SignUpScreen());
+                    AppRoutes.push(
+                        context,
+                        SignUpScreen(
+                          screen: 0,
+                        ));
                   },
                   child: CustomButton(
                     width: width * .6,
-                    height: height * .08,
+                    height: height * .06,
                     color: lightGolden,
                     title: "Sign Up",
                   ),
@@ -92,9 +106,14 @@ class _languageScreen extends State<LanguageScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    // EasyLoading.show();
+                    constValues().toast(
+                        "hellosksdnkjasnfndslfnlkesndrfnekljwnfrnwljktnjklewnclkjrnesldngsdnltgnlksendlkadassa",
+                        context);
+                  },
                   child: Text(
-                    "Sign in as a Guest",
+                    "Continue as a Guest",
                     style: headingStyle.copyWith(color: lightGolden),
                   ),
                 ),

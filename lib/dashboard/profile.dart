@@ -246,7 +246,7 @@ class _watching extends State<Profile> {
                       },
                       child: CustomButton(
                         width: width * .6,
-                        height: height * .08,
+                        height: height * .06,
                         color: lightGolden,
                         title: "Update Profile",
                       ),
@@ -339,7 +339,7 @@ class _watching extends State<Profile> {
               },
               child: CustomButton(
                 width: width * .6,
-                height: height * .08,
+                height: height * .06,
                 color: lightGolden,
                 title: "Update Password",
               ),

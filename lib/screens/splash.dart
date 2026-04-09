@@ -1,6 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zubara/API/basehelper.dart';
+import 'package:zubara/dashboard/mainscreen.dart';
+import 'package:zubara/languagedata/language.dart';
+import 'package:zubara/model/singleton.dart';
+import 'package:zubara/model/userdetailmodel.dart';
 import 'package:zubara/screens/languageScreen.dart';
 import 'package:zubara/utils/Colors.dart';
 import 'package:zubara/utils/routes.dart';
@@ -43,12 +49,50 @@ class _Splash extends State<Splash> with SingleTickerProviderStateMixin {
   //   });
   //   _animationController.forward();
   // }
+  getsharedprefdata() async {
+    await SharedPreferences.getInstance().then((onValue) {
+      setState(() {
+        token = (onValue.getString("token") ?? '');
+        User.userData.token = token;
+
+        // User.userData.lang = (onValue.getString("language") ?? '');
+      });
+      if (token == null || token.toString().isEmpty) {
+        startTime();
+      } else {
+        getProfile();
+      }
+    });
+  }
+
+  getProfile() {
+    APIHELPER().getuserProfile(context).then((value) {
+      setState(() {
+        print("values: $value");
+        if (value['error'] == false) {
+          UserDataModel userDataModel = UserDataModel();
+          setState(() {
+            userDataModel = UserDataModel.fromJson(value['data']);
+            User.userData.userResult = userDataModel.result;
+          });
+          print("my token " + User.userData.token);
+          // AppRoutes.push(context, ());
+          AppRoutes.makeFirst(context, MainScreen());
+        } else {
+          startTime();
+        }
+      });
+    }).catchError((onError) {
+      // constValues().toast("$onError", context);
+      AppRoutes.replace(context, LanguageScreen());
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    startTime();
+    getsharedprefdata();
   }
 
   @override

@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zubara/languagedata/language.dart';
+import 'package:zubara/languagedata/language_constants.dart';
+import 'package:zubara/model/singleton.dart';
+import 'package:zubara/screens/alldepartment.dart';
 import 'package:zubara/screens/cart.dart';
+import 'package:zubara/screens/creditcardscreen.dart';
+import 'package:zubara/screens/languageScreen.dart';
 import 'package:zubara/utils/Colors.dart';
+import 'package:zubara/utils/const.dart';
 import 'package:zubara/utils/customButton.dart';
 import 'package:zubara/utils/routes.dart';
 import 'package:zubara/utils/textstyle.dart';
@@ -23,13 +32,12 @@ class _BuyerDrawerState extends State<MainDrawer> {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     return Container(
-      width: MediaQuery.of(context).size.width * .7,
+      width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-          color: mainColor,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(width * .4),
-          ),
+      decoration: BoxDecoration(color: mainColor,
+          // borderRadius: BorderRadius.only(
+          //   topRight: Radius.circular(width * .4),
+          // ),
           boxShadow: [
             BoxShadow(
                 color: Theme.of(context).primaryColor,
@@ -43,11 +51,32 @@ class _BuyerDrawerState extends State<MainDrawer> {
             height: height * .1,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Menu",
+                style: headingStyle.copyWith(
+                  fontSize: height * .06,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  AppRoutes.pop(context);
+                },
+                child:
+                    Icon(Icons.close, color: lightGolden, size: height * .06),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: height * .02,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 margin: EdgeInsets.only(right: width * .03),
-                width: width * .63,
+                width: width * .9,
                 height: height * .1,
                 color: Colors.white,
                 child: Center(
@@ -103,7 +132,7 @@ class _BuyerDrawerState extends State<MainDrawer> {
             children: [
               GestureDetector(
                 onTap: () {
-                  // AppRoutes.push(context, LoginScreen());
+                  AppRoutes.push(context, CreditCardScreen());
                 },
                 child: CustomButton(
                   width: width * .35,
@@ -117,6 +146,30 @@ class _BuyerDrawerState extends State<MainDrawer> {
           SizedBox(
             height: height * .04,
           ),
+          GestureDetector(
+              onTap: () {
+                AppRoutes.push(context, AddDepartment());
+              },
+              child: Padding(
+                padding: EdgeInsets.only(bottom: height * .02),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: lightGolden,
+                      size: height * .04,
+                    ),
+                    SizedBox(
+                      width: width * .03,
+                    ),
+                    Text(
+                      "Add Product",
+                      style: headingStyle.copyWith(
+                          fontSize: 16, fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+              )),
           tile(1, "View Cart", cart),
           tile(2, "chat", chat),
           tile(3, "Contact Us", contactUs),
@@ -124,30 +177,73 @@ class _BuyerDrawerState extends State<MainDrawer> {
           tile(5, "Share", share),
           tile(6, "FAQ / Help", faq),
           tile(7, "Socail Responsibility", socialResponsibility),
+          GestureDetector(
+              onTap: () {
+                if (User.userData.lang == "en") {
+                  setState(() {
+                    User.userData.lang = "ar";
+                  });
+                  print("Selected languages: ${User.userData.lang}");
+                  constValues().changeLanguage("ar", context);
+                } else {
+                  setState(() {
+                    User.userData.lang = "en";
+                  });
+                  print("Selected languages: ${User.userData.lang}");
+                  constValues().changeLanguage("en", context);
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.only(bottom: height * .02),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      color: lightGolden,
+                      size: height * .04,
+                    ),
+                    SizedBox(
+                      width: width * .03,
+                    ),
+                    Text(
+                      "${getTranslated(context, "language")}",
+                      style: headingStyle.copyWith(
+                          fontSize: 16, fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+              )),
           tile(8, "Terms & Condition", condition),
           SizedBox(
             height: height * .04,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                "\tLogOut",
-                style: headingStyle.copyWith(
-                    fontSize: 16, fontWeight: FontWeight.normal),
-              ),
-              SizedBox(
-                width: width * .03,
-              ),
-              Icon(
-                Icons.logout,
-                size: height * .03,
-                color: lightGolden,
-              ),
-              SizedBox(
-                width: width * .03,
-              ),
-            ],
+          GestureDetector(
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              AppRoutes.makeFirst(context, LanguageScreen());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  "\tLogOut",
+                  style: headingStyle.copyWith(
+                      fontSize: 16, fontWeight: FontWeight.normal),
+                ),
+                SizedBox(
+                  width: width * .03,
+                ),
+                Icon(
+                  Icons.logout,
+                  size: height * .03,
+                  color: lightGolden,
+                ),
+                SizedBox(
+                  width: width * .03,
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: height * .01,

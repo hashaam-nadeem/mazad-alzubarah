@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:zubara/languagedata/language_constants.dart';
+import 'package:zubara/model/singleton.dart';
 import 'package:zubara/utils/Colors.dart';
+import 'package:zubara/utils/const.dart';
 import 'package:zubara/utils/routes.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:zubara/utils/textstyle.dart';
@@ -7,11 +10,16 @@ import 'package:zubara/utils/textstyle.dart';
 class RegistrationAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   String title;
+  BuildContext context;
   double height;
   bool pop;
   bool languagePage;
   RegistrationAppBar(
-      {@required this.title, this.languagePage, this.pop, this.height});
+      {@required this.title,
+      @required this.context,
+      this.languagePage,
+      this.pop,
+      this.height});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -55,7 +63,19 @@ class RegistrationAppBar extends StatelessWidget
                   ),
                   languagePage == true
                       ? GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            if (User.userData.lang == "en") {
+                              User.userData.lang = "ar";
+                              print(
+                                  "Selected languages: ${User.userData.lang}");
+                              constValues().changeLanguage("ar", context);
+                            } else {
+                              User.userData.lang = "en";
+                              print(
+                                  "Selected languages: ${User.userData.lang}");
+                              constValues().changeLanguage("en", context);
+                            }
+                          },
                           child: Container(
                             height: MediaQuery.of(context).size.height * .09,
                             width: MediaQuery.of(context).size.width * .13,
@@ -66,7 +86,7 @@ class RegistrationAppBar extends StatelessWidget
                                 color: Colors.white),
                             child: Center(
                               child: Text(
-                                "EN",
+                                "${getTranslated(context, "language")}",
                                 textAlign: TextAlign.center,
                                 style: headingStyle.copyWith(
                                     color: secondaryColor),

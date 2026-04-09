@@ -249,7 +249,7 @@ class _Cart extends State<Cart> {
                                 child: Center(
                                   child: CustomButton(
                                     width: width * .8,
-                                    height: height * .08,
+                                    height: height * .06,
                                     color: lightGolden,
                                     title: "Proceed",
                                   ),
